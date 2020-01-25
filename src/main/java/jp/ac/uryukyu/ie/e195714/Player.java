@@ -10,7 +10,6 @@ public class Player {
     public Player(){
         this.cards = new ArrayList<>();
         this.cardsCnt = 0;
-        this.score = 0;
     }
 
     public ArrayList<Integer> getCards() { return cards; }
@@ -23,13 +22,5 @@ public class Player {
 
     public void setCardsCnt(int cardsCnt) {
         this.cardsCnt = cardsCnt;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 }

@@ -47,12 +47,10 @@ public class BlackJack {
         this.gameEndFlag = false;
         this.deck = new ArrayList<>(52);
 
-        // リストに1-52の連番を代入
         for (int i = 1; i <= 52; i++) {
             deck.add(i);
         }
 
-        //山札をシャッフル
         Collections.shuffle(deck);
 
         this.player.setCards(new ArrayList<>());
@@ -135,30 +133,103 @@ public class BlackJack {
         int diff1 = 21 - score1;
         int diff2 = 21 - score2;
         if (22 <= score1 && 22 <= score2) {
-            // *** プレイヤー・ディーラー共にバーストしているので負け *** //
             res = -1;
         } else if (22 <= score1 && score2 <= 21) {
-            // *** プレイヤーバーストしているので負け *** //
             res = -1;
         } else if (score1 <= 21 && 22 <= score2) {
-            // *** ディーラーバーストしているので勝ち *** //
             res = 1;
         } else {
             if (diff1 == diff2) {
-                // *** 同スコアなら引き分け *** //
                 res = 0;
                 if (score1 == 21 && this.player.getCardsCnt() == 2 && this.dealer.getCardsCnt() != 2) {
-                    // *** プレイヤーのみがピュアブラックジャックならプレイヤーの勝ち *** //
                     res = 1;
                 }
             } else if (diff1 < diff2) {
-                // *** プレイヤーの方が21に近いので勝ち *** //
                 res = 1;
             } else {
-                // *** ディーラーの方が21に近いので負け *** //
                 res = -1;
             }
         }
         return res;
     }
+
+    public void showStatus(BlackJack blackJack) {
+        System.out.println("----------");
+        ArrayList<Integer> dc = blackJack.getDealer().getCards();
+        int dcc = blackJack.getDealer().getCardsCnt();
+        System.out.println("ディーラーのスコア " + (blackJack.getGameEndFlag() ? blackJack.getScore(dc) : ""));
+        String cardStr = "";
+        if (blackJack.getGameEndFlag()) {
+            for (int i = 0; i < dcc; i++) {
+                if (i != 0)
+                    cardStr += ",";
+                cardStr += toDescription(dc.get(i));
+            }
+        } else {
+            cardStr = toDescription(dc.get(0)) + ",もう一枚は秘密です";
+        }
+        System.out.println(cardStr);
+        System.out.println("----------");
+        // player
+        ArrayList<Integer> pc = blackJack.getPlayer().getCards();
+        int pcc = blackJack.getPlayer().getCardsCnt();
+        System.out.println("あなたのスコア " + blackJack.getScore(pc));
+        cardStr = "";
+        for (int i = 0; i < pcc; i++) {
+            if (i != 0)
+                cardStr += ",";
+            cardStr += toDescription(pc.get(i));
+        }
+        System.out.println(cardStr);
+        System.out.println("----------");
+        if (blackJack.getGameEndFlag()) {
+            if (blackJack.gameJudgment() == 1) {
+                System.out.println("おめでとう！あなたの勝利です！");
+            } else if (blackJack.gameJudgment() == 0) {
+                System.out.println("引き分けです");
+            } else {
+                System.out.println("ざんねん、あなたの負けです");
+            }
+            System.out.println("----------");
+        }
+    }
+
+    private static String toDescription(int cardNumber) {
+        String rank = toRank(toNumber(cardNumber));
+        String suit = toSuit(cardNumber);
+
+        return suit + "の" + rank;
+    }
+
+    private static String toRank(int number) {
+        switch(number) {
+            case 1:
+                return "A";
+            case 11:
+                return "J";
+            case 12:
+                return "Q";
+            case 13:
+                return "K";
+            default:
+                String str = String.valueOf(number);
+                return str;
+        }
+    }
+
+    private static String toSuit(int cardNumber) {
+        switch((cardNumber - 1)/13) {
+            case 0:
+                return "クラブ";
+            case 1:
+                return "ダイヤ";
+            case 2:
+                return "ハート";
+            case 3:
+                return "スペード";
+            default:
+                return "例外です";
+        }
+    }
 }
+
