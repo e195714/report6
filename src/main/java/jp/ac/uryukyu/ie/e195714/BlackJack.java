@@ -18,6 +18,30 @@ public class BlackJack {
         this.gameInit();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(Player dealer) {
+        this.dealer = dealer;
+    }
+
+    public boolean getGameEndFlag() {
+        return gameEndFlag;
+    }
+
+    public void setGameEndFlag(boolean gameEndFlag) {
+        this.gameEndFlag = gameEndFlag;
+    }
+
     public void gameInit() {
         System.out.println("ゲームを開始します");
         this.gameEndFlag = false;
@@ -32,19 +56,24 @@ public class BlackJack {
         Collections.shuffle(deck);
 
         this.player.setCards(new ArrayList<>());
+        this.player.setCardsCnt(0);
         this.dealer.setCards(new ArrayList<>());
+        this.dealer.setCardsCnt(0);
         for(int i=0; i<2; i++){
-            this.player.getCards().add(deckDrowCount);
+            this.player.getCards().add(deck.get(deckDrowCount));
             deckDrowCount++;
-            this.dealer.getCards().add(deckDrowCount);
+            this.player.setCardsCnt(this.player.getCardsCnt() + 1);
+            this.dealer.getCards().add(deck.get(deckDrowCount));
+            this.dealer.setCardsCnt(this.dealer.getCardsCnt() + 1);
             deckDrowCount++;
         }
     }
 
     public void playerHit(){
         if(this.gameEndFlag == false) {
-            this.player.getCards().add(deckDrowCount);
+            this.player.getCards().add(deck.get(deckDrowCount));
             deckDrowCount++;
+            this.player.setCardsCnt(this.player.getCardsCnt() + 1);
             int score = this.getScore(this.player.getCards());
             if(22 <= score)
                 this.playerStand();
@@ -57,10 +86,10 @@ public class BlackJack {
 
     public void dealerHit(){
         for (;;) {
-            int score = this.getScore(this.player.getCards());
+            int score = this.getScore(this.dealer.getCards());
             if (score < 17) {
-                this.dealer.getCards().add(deckDrowCount);
-                deckDrowCount++;
+                this.dealer.getCards().add(deck.get(deckDrowCount++));
+                this.dealer.setCardsCnt(this.dealer.getCardsCnt() + 1);
             } else {
                 this.dealerStand();
                 break;
@@ -72,7 +101,7 @@ public class BlackJack {
         this.gameEndFlag = true;
     }
 
-    private static int getScore(List<Integer> list) {
+    static int getScore(List<Integer> list) {
         int sum = 0;
 
         for(int i =0;i < list.size();i++) {
@@ -97,5 +126,39 @@ public class BlackJack {
         }
 
         return number;
+    }
+
+    public int gameJudgment() {
+        int res = 0;
+        int score1 = this.getScore(this.player.getCards());
+        int score2 = this.getScore(this.dealer.getCards());
+        int diff1 = 21 - score1;
+        int diff2 = 21 - score2;
+        if (22 <= score1 && 22 <= score2) {
+            // *** プレイヤー・ディーラー共にバーストしているので負け *** //
+            res = -1;
+        } else if (22 <= score1 && score2 <= 21) {
+            // *** プレイヤーバーストしているので負け *** //
+            res = -1;
+        } else if (score1 <= 21 && 22 <= score2) {
+            // *** ディーラーバーストしているので勝ち *** //
+            res = 1;
+        } else {
+            if (diff1 == diff2) {
+                // *** 同スコアなら引き分け *** //
+                res = 0;
+                if (score1 == 21 && this.player.getCardsCnt() == 2 && this.dealer.getCardsCnt() != 2) {
+                    // *** プレイヤーのみがピュアブラックジャックならプレイヤーの勝ち *** //
+                    res = 1;
+                }
+            } else if (diff1 < diff2) {
+                // *** プレイヤーの方が21に近いので勝ち *** //
+                res = 1;
+            } else {
+                // *** ディーラーの方が21に近いので負け *** //
+                res = -1;
+            }
+        }
+        return res;
     }
 }
