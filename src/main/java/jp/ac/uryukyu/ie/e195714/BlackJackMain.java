@@ -1,6 +1,11 @@
+/**
+ * @file BlackJackMain.java
+ * @brief ブラックジャックメインクラス
+ * @author Keigo Nakada
+ * @data 2020.01.20
+ */
 package jp.ac.uryukyu.ie.e195714;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BlackJackMain {

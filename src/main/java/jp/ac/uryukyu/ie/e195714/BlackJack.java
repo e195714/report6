@@ -1,9 +1,20 @@
+/**
+ * @file BlackJack.java
+ * @brief ブラックジャッククラス
+ * @author Keigo Nakada
+ * @data 2020.01.20
+ */
 package jp.ac.uryukyu.ie.e195714;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @class Blackjack
+ * @brief ブラックジャック
+ *
+ */
 public class BlackJack {
     private List<Integer> deck;
     private boolean gameEndFlag;
@@ -11,6 +22,12 @@ public class BlackJack {
     private Player dealer;
     private int deckDrowCount;
 
+    /**
+     * @brief コンストラクタ
+     * @fn public BlackJack
+     * @return なし
+     *
+     */
     public BlackJack() {
         this.player = new Player();
         this.dealer = new Player();
@@ -42,6 +59,12 @@ public class BlackJack {
         this.gameEndFlag = gameEndFlag;
     }
 
+    /**
+     * ゲームを初期化する。
+     * 山札を用意し、シャッフルする。ディーラーとプレイヤーの手札を初期化し、それぞれにカードを２枚ずつ配る。
+     *
+     * @return なし
+     */
     public void gameInit() {
         System.out.println("ゲームを開始します");
         this.gameEndFlag = false;
@@ -67,6 +90,11 @@ public class BlackJack {
         }
     }
 
+    /**
+     * プレイヤーがヒットする。
+     *
+     * @return なし
+     */
     public void playerHit(){
         if(this.gameEndFlag == false) {
             this.player.getCards().add(deck.get(deckDrowCount));
@@ -78,10 +106,20 @@ public class BlackJack {
         }
     }
 
+    /**
+     * プレイヤーがスタンドする。
+     *
+     * @return なし
+     */
     public void playerStand(){
         this.dealerHit();
     }
 
+    /**
+     * ディーラーがヒットする。
+     *
+     * @return なし
+     */
     public void dealerHit(){
         for (;;) {
             int score = this.getScore(this.dealer.getCards());
@@ -95,10 +133,21 @@ public class BlackJack {
         }
     }
 
+    /**
+     * ディーラーがスタンドする。
+     *
+     * @return なし
+     */
     public void dealerStand(){
         this.gameEndFlag = true;
     }
 
+    /**
+     * スコアを算出する。
+     *
+     * @param list　プレイヤーの手札
+     * @return 足した結果
+     */
     static int getScore(List<Integer> list) {
         int sum = 0;
 
@@ -109,6 +158,12 @@ public class BlackJack {
         return sum;
     }
 
+    /**
+     * J, Q, Kのスコアを10に変換する。
+     *
+     * @param num　カード
+     * @return 変換した結果
+     */
     private static int toPoint(int num) {
         if(num ==11||num == 12||num == 13) {
             num = 10;
@@ -117,6 +172,12 @@ public class BlackJack {
         return num;
     }
 
+    /**
+     * トランプの順番を数字に変換する。
+     *
+     * @param cardNumber　カードの順番
+     * @return 変換した結果
+     */
     static int toNumber(int cardNumber) {
         int number = cardNumber % 13;
         if(number == 0) {
@@ -126,6 +187,11 @@ public class BlackJack {
         return number;
     }
 
+    /**
+     * 勝敗を判断する。
+     *
+     * @return 数字
+     */
     public int gameJudgment() {
         int res = 0;
         int score1 = this.getScore(this.player.getCards());
@@ -153,6 +219,11 @@ public class BlackJack {
         return res;
     }
 
+    /**
+     * プレーヤーたちのスコアと手札を表示する。
+     *
+     * @param blackJack　インスタンス
+     */
     public void showStatus(BlackJack blackJack) {
         System.out.println("----------");
         ArrayList<Integer> dc = blackJack.getDealer().getCards();
@@ -194,6 +265,12 @@ public class BlackJack {
         }
     }
 
+    /**
+     * カードの順番からトランプのスートと数字に変換する。
+     *
+     * @param cardNumber　カードの順番
+     * @return 文字列
+     */
     private static String toDescription(int cardNumber) {
         String rank = toRank(toNumber(cardNumber));
         String suit = toSuit(cardNumber);
@@ -217,6 +294,12 @@ public class BlackJack {
         }
     }
 
+    /**
+     * カードの順番をトランプのスートに変換する。
+     *
+     * @param cardNumber　カードの順番
+     * @return　文字列
+     */
     private static String toSuit(int cardNumber) {
         switch((cardNumber - 1)/13) {
             case 0:
