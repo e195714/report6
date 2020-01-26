@@ -117,7 +117,7 @@ public class BlackJack {
         return num;
     }
 
-    private static int toNumber(int cardNumber) {
+    static int toNumber(int cardNumber) {
         int number = cardNumber % 13;
         if(number == 0) {
             number = 13;

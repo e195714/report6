@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group 'Report6'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 10
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+}
+
+jar {
+    manifest {
+        attributes  "Main-Class": "jp.ac.uryukyu.ie.e195714.BlackJackMain"
+    }
+}
